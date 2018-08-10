@@ -1,5 +1,4 @@
 #include<iostream>
-
 //Just for wrapping a singl instance of the game! That it is contains data for one particular move by an player
 typedef struct tile{
 	pawn* coin;
@@ -25,24 +24,24 @@ public:
 	bool botAI(); //Runs Computer's AI
 	bool check_game_status(bool);//Checks for change in board's status and returns true if game's status hasn't changed!//
 
-	pawn* check_valid_jump(pawn*);//checks for basic validty in movement//
+	pawn* check_valid_jump(int beg_x, int beg_y, int end_x, int end_y, int player);//checks for basic validty in movement//
 	pawn* create_pawn(int beg_x, int beg_y, int end_x, int end_y, int player);//Generates valid pawn struct // basically initializes struct pawn and calls checker funcs
 	bool jump(int beg_x, int beg_y, int end_x, int end_y, int player);
 
 };
 
-Board::Board():bot(1),player(2),bot_king(-1),player_king(-2){
+Board::Board():bot(1),player(2),bot_king(-1),player_king(-2),tile(0){
 	//Inits data members!
 	status = -1;
 	//Generates Board
 	for (int i = 0; i<8 ; i++){
 		for(int j = 0; j<8 ; j++)
 			if(i<3 && ((i%2==0 && j%2!=0)||(i%2!=0 && j%2==0)))
-				this->board[i][j] = create_pawn(i,j,bot);
+				this->board[i][j] = create_pawn(i,j,this->bot);
 			else if(i>4 && ((i%2!=0 && j%2==0)||(i%2==0 && j%2!=0)))
-				this->board[i][j]->coin = create_pawn(i,j,player);
+				this->board[i][j]->coin = create_pawn(i,j,this->player);
 			else
-				this->board[i][j]->coin = create_pawn(i,j,tile);
+				this->board[i][j]->coin = create_pawn(i,j,this->tile);
 	}
 	//GAME STARTS HERE
 	while(status==-1){//will continue till game status is changed by check_game_status
@@ -56,7 +55,6 @@ bool Board::check_game_status(bool flag){
 		for(int i = 0 ; i<8 ; i++){
 			for(int j = 0 ; j<8 ; j++){
 				//status check will update flag value
-
 				flag = true;//if all checks passed!
 			}
 		}
@@ -83,15 +81,8 @@ pawn* Board::create_pawn(int x, int y, int player){
 	return temp;
 }
 
-pawn* Board::check_valid_jump(pawn* play){
-	if(play == NULL){
-		std::cout<<"create_pawn failure!!";//temporary output for error checking
-		return NULL;
-	}
-	//checks for board boundary and pawn overlapping and illegal pawn movement
-	else {
-		return play;
-	}
+pawn* Board::check_valid_jump(int beg_x, int beg_y, int end_x, int end_y, int player)
+	
 }
 
 bool Board::playerAI(){
@@ -105,10 +96,4 @@ bool Board::botAI(){
 
 int main(){
 	Board Game;
-	for(int i = 0 ; i<8 ; i++){
-		for(int j = 0 ; j<8 ; j++){
-			std::cout<<Game.board[i][j]<<" ";
-		}
-		std::cout<<"\n";
-	}
 }
