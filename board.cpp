@@ -1,5 +1,4 @@
 #include<iostream>
-using namespace std;
 //Just for wrapping a singl instance of the game! That it i s contains data for one particular move by an player
 struct pawn{
 	int player;
@@ -16,7 +15,7 @@ public:
 	const int bot; //1// //similarily designated with number 1
 	const int player_king;//-2//
 	const int bot_king;//-1//
-	const int tile;
+	const int board_tile;//0//
 	Board();
 
 	bool playerAI(); //Runs the AI// //Contestant can use bool to error check code, also used by check_game_status!//
@@ -29,18 +28,18 @@ public:
 
 };
 
-Board::Board():bot(1),player(2),bot_king(-1),player_king(-2),tile(0){
+Board::Board():bot(1),player(2),bot_king(-1),player_king(-2),board_tile(0){
 	//Inits data members!
 	status = -1;
 	//Generates Board
 	for (int i = 0; i<8 ; i++){
 		for(int j = 0; j<8 ; j++)
 			if(i<3 && ((i%2==0 && j%2!=0)||(i%2!=0 && j%2==0)))
-				this->board[i][j]->coin = create_pawn(i,j,bot);
+				this->board[i][j].coin = create_pawn(i,j,bot);
 			else if(i>4 && ((i%2!=0 && j%2==0)||(i%2==0 && j%2!=0)))
-				this->board[i][j]->coin = create_pawn(i,j,player);
+				this->board[i][j].coin = create_pawn(i,j,player);
 			else
-				this->board[i][j]->coin = create_pawn(i,j,tile);
+				this->board[i][j].coin = create_pawn(i,j,board_tile);
 	}
 	//GAME STARTS HERE
 	while(status==-1){//will continue till game status is changed by check_game_status
@@ -75,7 +74,7 @@ bool Board::jump(int beg_x, int beg_y, int end_x, int end_y, int player){
 		{
 			if(i==beg_x && j==beg_y)
 			{
-				play=this->board[i][j]->coin;
+				play=this->board[i][j].coin;
 				break;
 			}
 		}
@@ -107,9 +106,9 @@ pawn* Board::check_valid_jump(pawn* play,int end_x,int end_y)
 	{
 		if(end_x>8 || end_y>8 || end_x<0 || end_y<0)
 			return NULL; //checking for board boundary;
-		else if(board[end_x][end_y]==0) //to check if the position is empty
+		else if(board[end_x][end_y].coin->player==0) //to check if the position is empty
 		{
-			if(end_x-1==play->x && end_y-1==play->y) || (end_x+1==play->x && end_y-1 ==play->y) ||end_x-2==play->x && end_y-2==play->y) || (end_x+2==play->x && end_y-2 ==play->y))
+			if((end_x-1==play->x && end_y-1==play->y) || (end_x+1==play->x && end_y-1 ==play->y) || (end_x-2==play->x && end_y-2==play->y) || (end_x+2==play->x && end_y-2 ==play->y))
 			{
 				play->x=end_x;
 				play->y=end_y;
@@ -129,8 +128,7 @@ pawn* Board::check_valid_jump(pawn* play,int end_x,int end_y)
 				}
 			}
 		}
-		else
-			return NULL;
+		return NULL;
 	}
 }
 bool Board::playerAI(){
@@ -146,7 +144,7 @@ int main(){
 	Board Game;
 	for(int i = 0 ; i<8 ; i++){
 		for(int j = 0 ; j<8 ; j++){
-			std::cout<<Game.board[i][j]<<" ";
+			std::cout<<Game.board[i][j].coin->player<<" ";
 		}
 		std::cout<<"\n";
 	}
