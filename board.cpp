@@ -1,5 +1,4 @@
 #include<iostream>
-//Just for wrapping a singl instance of the game! That it i s contains data for one particular move by an player
 struct pawn{
 	int player;
 	int x,y;
@@ -35,17 +34,17 @@ Board::Board():bot(1),player(2),bot_king(-1),player_king(-2),board_tile(0){
 	for (int i = 0; i<8 ; i++){
 		for(int j = 0; j<8 ; j++)
 			if(i<3 && ((i%2==0 && j%2!=0)||(i%2!=0 && j%2==0)))
-				this->board[i][j].coin = create_pawn(i,j,bot);
+				this->board[i][j].coin = create_pawn(i,j,this->bot);
 			else if(i>4 && ((i%2!=0 && j%2==0)||(i%2==0 && j%2!=0)))
-				this->board[i][j].coin = create_pawn(i,j,player);
+				this->board[i][j].coin = create_pawn(i,j,this->player);
 			else
-				this->board[i][j].coin = create_pawn(i,j,board_tile);
+				this->board[i][j].coin = create_pawn(i,j,this->board_tile);
 	}
-	//GAME STARTS HERE
+	/*GAME STARTS HERE
 	while(status==-1){//will continue till game status is changed by check_game_status
 		if(check_game_status(playerAI())) //After playerAI's call and the return value is true check_game_status will checks board's status and update status
 			check_game_status(botAI());
-	}
+	}*/
 }
 
 bool Board::check_game_status(bool flag){
@@ -87,7 +86,7 @@ bool Board::jump(int beg_x, int beg_y, int end_x, int end_y, int player){
 }
 
 pawn* Board::create_pawn(int x, int y, int player){
-	pawn* temp;
+	pawn* temp = new pawn;
 	temp->x = x;
 	temp->y = y;
 	temp->player = player;
@@ -104,7 +103,7 @@ pawn* Board::check_valid_jump(pawn* play,int end_x,int end_y)
 	//checks for board boundary and pawn overlapping and illegal pawn movement
 	else
 	{
-		if(end_x>8 || end_y>8 || end_x<0 || end_y<0)
+		if(end_x>7 || end_y>7 || end_x<0 || end_y<0)
 			return NULL; //checking for board boundary;
 		else if(board[end_x][end_y].coin->player==0) //to check if the position is empty
 		{
